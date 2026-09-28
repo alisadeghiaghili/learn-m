@@ -43,6 +43,21 @@ button,
 input {
   font: inherit;
   color: inherit;
+  background: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: #ffe066;
 }
 
 code {
@@ -136,32 +151,38 @@ code {
   background: var(--elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 5px 10px;
+  padding: 8px 14px;
   cursor: pointer;
   color: var(--ink);
+  font-weight: 550;
+  line-height: 1.2;
+  min-height: 36px;
 }
 
 .btn:hover {
   border-color: var(--ink-faint);
+  background: var(--surface);
+}
+
+.btn-primary {
+  background: var(--purple);
+  color: #fff;
+  border-color: transparent;
+  font-weight: 650;
+}
+
+.btn-primary:hover {
+  background: #b48aff;
+  filter: none;
 }
 
 .btn:focus-visible,
 .step-node:focus-visible,
 .level-card:focus-visible,
-#terminal-input:focus-visible {
+#terminal-input:focus-visible,
+.intro-actions .btn:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
-}
-
-.btn-primary {
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-color: transparent;
-  font-weight: 600;
-}
-
-.btn-primary:hover {
-  filter: brightness(1.05);
 }
 
 /* Main grid: steps | work | table */
@@ -604,13 +625,16 @@ code {
 .intro-lead {
   margin: 0 0 12px;
   max-width: 62ch;
+  font-size: 14.5px;
+  line-height: 1.55;
 }
 
 .intro-list {
-  margin: 0 0 18px;
+  margin: 0 0 14px;
   padding-left: 18px;
   max-width: 68ch;
   color: var(--ink-muted);
+  line-height: 1.7;
 }
 
 .intro-list li {
@@ -621,10 +645,50 @@ code {
   color: var(--ink);
 }
 
+.intro-meta {
+  margin: 0 0 12px;
+  color: var(--ink-muted);
+  max-width: 68ch;
+}
+
+.intro-count {
+  margin: 0 0 18px;
+  max-width: 68ch;
+}
+
+.intro-count strong {
+  color: var(--accent);
+}
+
+.intro-h {
+  margin: 18px 0 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.intro-body {
+  margin: 0 0 10px;
+  max-width: 68ch;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+.intro-body strong {
+  color: var(--ink);
+}
+
 .intro-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 22px;
+  padding-top: 8px;
+}
+
+.intro-actions .btn {
+  min-width: 120px;
 }
 
 .levels-grid {

@@ -662,18 +662,36 @@ function openLevelsModal() {
 }
 
 function openIntro() {
+  const levelCount = LEVELS.length;
   openModal(
     'learn-m',
-    `<p class="intro-lead">Interactive Power Query <strong>M</strong> tutor — same loop as learnGitBranching: type commands, watch the visualization update, clear the level.</p>
+    `<p class="intro-lead">Interactive <strong>Power Query M</strong> tutor — sandbox + guided levels.</p>
+     <p class="intro-lead">The board shows <strong>Applied Steps → Preview</strong>. That is the material flow M manages.</p>
      <ul class="intro-list">
-       <li><strong>Applied Steps</strong> on the left is your commit graph. Bind <code>Name = expr</code> to add a step.</li>
-       <li><strong>Table preview</strong> on the right is the truth. Goal checks read it.</li>
-       <li><strong>Terminal</strong> accepts M expressions plus <code>levels</code>, <code>undo</code>, <code>reset</code>, <code>hint</code>.</li>
+       <li>Basics: <code>let</code>, <code>if</code>, lists, records</li>
+       <li>Tables: <code>Table.SelectRows</code>, <code>AddColumn</code>, <code>Sort</code></li>
+       <li>Shape: <code>Unpivot</code>, <code>Pivot</code>, <code>SplitColumn</code>, types</li>
+       <li>Blend: <code>JoinKind</code>, <code>NestedJoin</code>, <code>Table.Group</code></li>
+       <li>Sources: <code>Csv.Document</code>, <code>Excel.CurrentWorkbook</code></li>
      </ul>
+     <p class="intro-meta">Meta: <code>levels</code>, <code>goal</code>, <code>hint</code>, <code>solution</code>, <code>steps</code>, <code>code</code>, <code>undo</code>, <code>reset</code>.</p>
+     <p class="intro-count"><strong>${levelCount}</strong> levels included. Open Levels to begin, or stay in sandbox.</p>
+
+     <h3 class="intro-h">What is learn-m?</h3>
+     <p class="intro-body">A browser lab bench for Power Query M: you type real-shaped <code>M</code> expressions and watch applied steps, tables, and generated <code>let…in</code> code update. No Power BI install required for the tutorial core.</p>
+
+     <h3 class="intro-h">Publisher</h3>
+     <p class="intro-body">Published and maintained by <strong>Ali Sadeghi Aghili</strong> — programmer, data engineer / scientist, ML engineer.
+       <a href="https://linktr.ee/aliaghili" target="_blank" rel="noopener noreferrer">linktr.ee/aliaghili</a>
+     </p>
+     <ul class="intro-list">
+       <li><a href="https://github.com/alisadeghiaghili/learn-m" target="_blank" rel="noopener noreferrer">GitHub — source &amp; issues</a></li>
+     </ul>
+     <p class="intro-body">Support the publisher: <a href="https://linktr.ee/aliaghili" target="_blank" rel="noopener noreferrer">linktr.ee/aliaghili</a></p>
+
      <div class="intro-actions">
-       <button type="button" id="intro-levels">Browse levels</button>
-       <button type="button" id="intro-sandbox">Open sandbox</button>
-       <button type="button" data-close>Dismiss</button>
+       <button type="button" class="btn" id="intro-sandbox">Sandbox</button>
+       <button type="button" class="btn btn-primary" id="intro-levels">Open levels</button>
      </div>`
   );
   $('#intro-levels')?.addEventListener('click', () => {
