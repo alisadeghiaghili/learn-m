@@ -217,6 +217,18 @@ export class TerminalView {
     this.logEl.innerHTML = '';
   }
 
+  insertText(text) {
+    if (!this.inputEl) return;
+    const start = this.inputEl.selectionStart ?? this.inputEl.value.length;
+    const end = this.inputEl.selectionEnd ?? this.inputEl.value.length;
+    const val = this.inputEl.value;
+    this.inputEl.value = val.slice(0, start) + text + val.slice(end);
+    const nextPos = start + text.length;
+    this.inputEl.setSelectionRange(nextPos, nextPos);
+    this.inputEl.focus();
+    this.syncGhost();
+  }
+
   focus() {
     this.inputEl?.focus();
   }

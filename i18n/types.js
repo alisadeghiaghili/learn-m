@@ -74,6 +74,19 @@ export const LOCALES = ['en', 'fa'];
  * @property {string} readyStatus
  * @property {string} highlightThis
  * @property {string} useIt
+ * @property {string} schemaTitle
+ * @property {(n: number) => string} tablesCount
+ * @property {string} rowsLabel
+ * @property {string} peekLabel
+ * @property {string} peekTitle
+ * @property {string} insertTableTitle
+ * @property {string} insertColTitle
+ * @property {string} previewingSource
+ * @property {string} returnToStep
+ * @property {string} dockViewBoth
+ * @property {string} dockViewGoal
+ * @property {string} dockViewTables
+ * @property {string} noTablesInLevel
  * @property {Array<{id: string, selector: string, title: string, what: string, how: string}>} helpSections
  * @property {(n: number) => string} difficultyOf
  * @property {(best: number, par: number) => string} bestSoFar

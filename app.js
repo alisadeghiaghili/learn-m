@@ -19,6 +19,7 @@ import {
 import { LEVELS, getLevel, tabs } from './levels.js';
 import { renderStepsHtml, renderPreviewHtml, buildMCode } from './board.js';
 import { renderDockHtml } from './dock.js';
+import { getAvailableTables } from './schema.js';
 import { TerminalView } from './terminal.js';
 import { renderMarkdown, showModal, escapeHtml } from './dialog.js';
 import { launchConfetti, playFanfare } from './confetti.js';
@@ -50,6 +51,8 @@ export class App {
     this.error = null;
     this.env = this.freshEnv();
     this.offeredCelebration = false;
+    this.peekedTable = null;
+    this.dockView = 'both';
 
     initLocale();
     this.mount();
@@ -211,8 +214,38 @@ export class App {
       }
     });
 
-    // Dock dynamic clicks (hint / solution)
+    // Dock dynamic clicks (tabs, peek, insert, hint, solution)
     this.dockEl.addEventListener('click', (e) => {
+      const tabBtn = e.target.closest('[data-dock-view]');
+      if (tabBtn) {
+        this.dockView = tabBtn.dataset.dockView || 'both';
+        this.renderDock();
+        return;
+      }
+
+      const peekBtn = e.target.closest('[data-peek-table]');
+      if (peekBtn) {
+        const tName = peekBtn.dataset.peekTable;
+        this.peekedTable = this.peekedTable === tName ? null : tName;
+        this.renderBoard();
+        this.renderDock();
+        return;
+      }
+
+      const insertTableBtn = e.target.closest('[data-insert-table]');
+      if (insertTableBtn) {
+        const tName = insertTableBtn.dataset.insertTable;
+        this.terminal.insertText(tName);
+        return;
+      }
+
+      const insertColBtn = e.target.closest('[data-insert-col]');
+      if (insertColBtn) {
+        const colName = insertColBtn.dataset.insertCol;
+        this.terminal.insertText(`[${colName}]`);
+        return;
+      }
+
       const target = e.target.closest('[data-action]');
       if (!target) return;
       const action = target.dataset.action;
@@ -220,10 +253,21 @@ export class App {
       if (action === 'solution') this.handleCommand('solution');
     });
 
+    // Board table clicks (exit peek mode)
+    this.boardTableEl.addEventListener('click', (e) => {
+      const exitBtn = e.target.closest('[data-action="exit-peek"]');
+      if (exitBtn) {
+        this.peekedTable = null;
+        this.renderBoard();
+        this.renderDock();
+      }
+    });
+
     // Step node click to view historical step
     this.boardStepsEl.addEventListener('click', (e) => {
       const node = e.target.closest('[data-step-index]');
       if (!node) return;
+      this.peekedTable = null;
       const idx = Number(node.dataset.stepIndex);
       this.selectedStep = idx;
       if (idx === -1) {
@@ -388,6 +432,8 @@ export class App {
     this.solved = false;
     this.selectedStep = -1;
     this.offeredCelebration = false;
+    this.peekedTable = null;
+    this.dockView = 'both';
 
     if (level.startTables) {
       const data = sampleDatasets();
@@ -413,6 +459,8 @@ export class App {
     this.result = envLookup(this.env, 'Sales');
     this.error = null;
     this.offeredCelebration = false;
+    this.peekedTable = null;
+    this.dockView = 'both';
     const winBanner = this.root.querySelector('#win-banner');
     if (winBanner) winBanner.hidden = true;
 
@@ -470,6 +518,7 @@ ${level.hint}
     const trimmed = raw.trim();
     if (!trimmed) return;
 
+    this.peekedTable = null;
     this.terminal.pushCmd(trimmed);
 
     // Check meta commands
@@ -741,6 +790,8 @@ ${level.hint}
         className: 'ghost',
         onClick: () => {
           this.offeredCelebration = false;
+    this.peekedTable = null;
+    this.dockView = 'both';
           this.terminal.focus();
         },
       },
@@ -752,6 +803,8 @@ ${level.hint}
         className: 'primary',
         onClick: () => {
           this.offeredCelebration = false;
+    this.peekedTable = null;
+    this.dockView = 'both';
           this.loadLevel(next.id);
         },
       });
@@ -761,6 +814,8 @@ ${level.hint}
         className: 'primary',
         onClick: () => {
           this.offeredCelebration = false;
+    this.peekedTable = null;
+    this.dockView = 'both';
           this.openLevels();
         },
       });
@@ -939,12 +994,25 @@ ${level.hint}
       this.boardStepsEl.innerHTML = renderStepsHtml(this.steps, this.selectedStep, initialSource);
     }
 
-    const currentVal = this.selectedStep >= 0 && this.steps[this.selectedStep]
-      ? this.steps[this.selectedStep].result
-      : this.result;
+    let currentVal;
+    let peekedTable = null;
+
+    if (this.peekedTable) {
+      const peekObj = envLookup(this.env, this.peekedTable);
+      if (peekObj) {
+        currentVal = peekObj;
+        peekedTable = this.peekedTable;
+      }
+    }
+
+    if (!peekedTable) {
+      currentVal = this.selectedStep >= 0 && this.steps[this.selectedStep]
+        ? this.steps[this.selectedStep].result
+        : this.result;
+    }
 
     if (this.boardTableEl) {
-      this.boardTableEl.innerHTML = renderPreviewHtml(currentVal);
+      this.boardTableEl.innerHTML = renderPreviewHtml(currentVal, { peekedTable });
     }
 
     if (this.codeOutEl) {
@@ -954,11 +1022,21 @@ ${level.hint}
 
   renderDock() {
     if (!this.dockEl) return;
+    const tables = getAvailableTables(this.env, this.level);
+
+    // Sync extra completions in terminal
+    const tableNames = tables.map((t) => t.name);
+    const colNames = tables.flatMap((t) => t.columns.map((c) => `[${c.name}]`));
+    this.terminal.setExtraCompletions([...tableNames, ...colNames]);
+
     this.dockEl.innerHTML = renderDockHtml({
       level: this.level,
       solved: this.solved,
       golfCount: this.golfCommands.length,
       progress: this.progress,
+      tables,
+      dockView: this.dockView,
+      peekedTable: this.peekedTable,
     });
   }
 }

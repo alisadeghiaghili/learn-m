@@ -86,9 +86,11 @@ export function renderStepsHtml(steps, selectedIndex, initialSource) {
 /**
  * Builds the Preview Data Grid or Scalar Value HTML.
  * @param {any} val
+ * @param {Object} [opts]
+ * @param {string | null} [opts.peekedTable]
  * @returns {string}
  */
-export function renderPreviewHtml(val) {
+export function renderPreviewHtml(val, opts = {}) {
   const u = ui();
 
   if (val === undefined || val === null) {
@@ -109,22 +111,39 @@ export function renderPreviewHtml(val) {
   const cols = val.columns || [];
   const rows = val.rows || [];
   const headHtml = cols
-    .map((c) => `<th><span class="th-name">${escapeHtml(c.name)}</span><span class="th-type">${escapeHtml(c.type || 'any')}</span></th>`)
+    .map((c) => {
+      const colName = typeof c === 'string' ? c : c.name;
+      const colType = c && typeof c === 'object' && c.type ? c.type : 'any';
+      return `<th><span class="th-name">${escapeHtml(colName)}</span><span class="th-type">${escapeHtml(colType)}</span></th>`;
+    })
     .join('');
 
   const bodyHtml = rows
     .map((r, rowIdx) => {
       const cells = cols
-        .map((c) => `<td>${escapeHtml(formatCell(r[c.name]))}</td>`)
+        .map((c) => {
+          const colName = typeof c === 'string' ? c : c.name;
+          return `<td>${escapeHtml(formatCell(r[colName]))}</td>`;
+        })
         .join('');
       return `<tr><td class="td-num">${rowIdx + 1}</td>${cells}</tr>`;
     })
     .join('');
 
+  const peekBanner = opts.peekedTable
+    ? `
+      <div class="peek-indicator">
+        <span class="peek-tag">👁 ${escapeHtml(u.previewingSource)}: <strong>${escapeHtml(opts.peekedTable)}</strong></span>
+        <button type="button" class="btn btn-sm btn-exit-peek" data-action="exit-peek">✕ ${escapeHtml(u.returnToStep)}</button>
+      </div>
+    `
+    : '';
+
   return `
-    <div class="grid-header">
+    <div class="grid-header${opts.peekedTable ? ' is-peek-mode' : ''}">
       <div class="grid-title">
         <span>${escapeHtml(u.dataPreviewTitle)}</span>
+        ${peekBanner}
       </div>
       <span class="grid-meta">${rows.length} rows × ${cols.length} columns</span>
     </div>

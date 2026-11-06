@@ -3,6 +3,8 @@ import { ui, getLocale, setLocale, LOCALES } from './i18n/index.js';
 import { renderMarkdown, escapeHtml } from './dialog.js';
 import { renderStepsHtml, renderPreviewHtml, buildMCode } from './board.js';
 import { renderDockHtml } from './dock.js';
+import { inspectTableSchema, getAvailableTables, renderSchemaHtml } from './schema.js';
+import { createStdlib, sampleDatasets, envDefine } from './m-engine.js';
 import { buildShareTargets } from './share.js';
 import { loadProgress, saveProgress, summarizeCurriculum } from './progress.js';
 import { LEVELS } from './levels.js';
@@ -44,15 +46,34 @@ assert.ok(code.includes('let'));
 assert.ok(code.includes('West = Table.SelectRows'));
 assert.ok(code.includes('in\n    West'));
 
-// 4. Dock rendering
+// 4. Dock and Schema rendering
+const testEnv = createStdlib();
+const testData = sampleDatasets();
+for (const [name, table] of Object.entries(testData)) {
+  envDefine(testEnv, name, table);
+}
+const availTables = getAvailableTables(testEnv, LEVELS[0]);
+assert.ok(availTables.length >= 1);
+assert.strictEqual(availTables[0].name, 'Sales');
+assert.ok(availTables[0].columns.length >= 3);
+
+const schemaHtml = renderSchemaHtml(availTables);
+assert.ok(schemaHtml.includes('Sales'));
+assert.ok(schemaHtml.includes('data-insert-table="Sales"'));
+assert.ok(schemaHtml.includes('data-peek-table="Sales"'));
+
 const dockHtml = renderDockHtml({
   level: LEVELS[0],
   solved: false,
   golfCount: 1,
   progress: {},
+  tables: availTables,
+  dockView: 'both',
 });
 assert.ok(dockHtml.includes(LEVELS[0].title));
 assert.ok(dockHtml.includes('Goal'));
+assert.ok(dockHtml.includes('Sales'));
+assert.ok(dockHtml.includes('data-dock-view="both"'));
 
 // 5. Progress summary
 const summary = summarizeCurriculum({ 'intro-1': { solved: true, bestCommands: 1 } });

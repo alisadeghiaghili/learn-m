@@ -84,7 +84,7 @@ kbd {
   height: 100vh;
   height: 100dvh;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
   min-height: 0;
   overflow: hidden;
 }
@@ -957,16 +957,17 @@ button.ghost:hover,
 }
 
 /* ==========================================================================
-   Learning Guide Dock
+   Learning Guide & Schema Dock (Dual Panel: Goal & Guide + Source Tables)
    ========================================================================== */
 
 .dock {
   background: var(--panel);
   border-inline-start: 1px solid var(--line);
-  overflow-y: auto;
-  padding: 16px;
+  overflow: hidden;
+  padding: 0;
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 
 .dock::-webkit-scrollbar {
@@ -987,10 +988,127 @@ button.ghost:hover,
   100% { box-shadow: inset 0 0 0 0 transparent; }
 }
 
-.dock-content {
+.dock-shell {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Dock View Switcher Tabs */
+.dock-tabs-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.dock-tab-btn {
+  flex: 1;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--haze);
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-family: var(--ui);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+  min-height: 28px;
+}
+
+.dock-tab-btn:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.dock-tab-btn.on {
+  background: var(--panel);
+  border-color: var(--line);
+  color: var(--m);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.tab-count-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--ink);
+  border: 1px solid var(--line);
+  color: var(--haze);
+}
+
+/* Dock Panes Area */
+.dock-panes-area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.view-both .dock-panes-area {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  min-height: 0;
+}
+
+.view-goal .dock-panes-area .goal-pane {
+  flex: 1;
+  height: 100%;
+  display: flex;
+}
+
+.view-goal .dock-panes-area .schema-pane {
+  display: none !important;
+}
+
+.view-tables .dock-panes-area .schema-pane {
+  flex: 1;
+  height: 100%;
+  display: flex;
+}
+
+.view-tables .dock-panes-area .goal-pane {
+  display: none !important;
+}
+
+.dock-pane {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.dock-pane.hidden {
+  display: none !important;
+}
+
+.goal-pane {
+  position: relative;
+}
+
+.view-both .schema-pane {
+  border-top: 1px solid var(--line);
+}
+
+.dock-scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .dock-header {
@@ -1170,6 +1288,265 @@ button.ghost:hover,
   display: flex;
   gap: 8px;
   margin-top: 4px;
+}
+
+/* ==========================================================================
+   Source Tables / Schema Panel (Matching learn-sql)
+   ========================================================================== */
+
+.schema-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--panel);
+}
+
+.schema-panel .panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel-2);
+  color: var(--haze);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.schema-panel .panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.empty-state {
+  padding: 16px 12px;
+  text-align: center;
+  color: var(--haze);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.table-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--ink);
+  overflow: hidden;
+  transition: all 0.15s ease;
+}
+
+.table-card:hover {
+  border-color: color-mix(in srgb, var(--table) 40%, var(--line));
+}
+
+.table-card.is-peeked {
+  border-color: var(--table);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--table) 30%, transparent);
+}
+
+.table-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  background: color-mix(in srgb, var(--panel-2) 65%, transparent);
+  border-bottom: 1px solid var(--line);
+}
+
+.table-name-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  padding: 2px 4px;
+  background: transparent;
+  color: var(--table);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: start;
+  border-radius: 4px;
+}
+
+.table-name-btn:hover {
+  color: #5eead4;
+  background: rgba(45, 212, 191, 0.1);
+}
+
+.table-meta-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.table-row-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--haze);
+}
+
+.btn-peek {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--ui);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  min-height: 24px;
+  transition: all 0.15s ease;
+}
+
+.btn-peek:hover {
+  border-color: var(--table);
+  color: var(--table);
+}
+
+.btn-peek.active {
+  background: color-mix(in srgb, var(--table) 25%, var(--panel));
+  border-color: var(--table);
+  color: #5eead4;
+}
+
+.table-cols-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 6px;
+}
+
+.col-item-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border: none;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  cursor: pointer;
+  text-align: start;
+  transition: background 0.12s ease;
+}
+
+.col-item-btn:hover {
+  background: var(--panel-2);
+}
+
+.col-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 3px;
+  min-width: 24px;
+  text-align: center;
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
+.col-badge.num {
+  background: rgba(96, 165, 250, 0.2);
+  color: #93c5fd;
+  border: 1px solid rgba(96, 165, 250, 0.4);
+}
+
+.col-badge.txt {
+  background: rgba(45, 212, 191, 0.2);
+  color: #5eead4;
+  border: 1px solid rgba(45, 212, 191, 0.4);
+}
+
+.col-badge.date {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fcd34d;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.col-badge.log {
+  background: rgba(52, 211, 153, 0.2);
+  color: #6ee7b7;
+  border: 1px solid rgba(52, 211, 153, 0.4);
+}
+
+.col-badge.list,
+.col-badge.rec,
+.col-badge.tbl,
+.col-badge.any {
+  background: rgba(139, 92, 246, 0.2);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+}
+
+.col-name {
+  flex: 1;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.col-type-label {
+  font-size: 10.5px;
+  color: var(--haze);
+}
+
+/* Grid Header Peek Mode Styles */
+.grid-header.is-peek-mode {
+  background: color-mix(in srgb, var(--table) 12%, var(--panel));
+  border-bottom-color: color-mix(in srgb, var(--table) 45%, var(--line));
+}
+
+.peek-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: 12px;
+}
+
+.peek-tag {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--table);
+  font-weight: 600;
+}
+
+.peek-tag strong {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.btn-exit-peek {
+  min-height: 24px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.btn-exit-peek:hover {
+  border-color: var(--err);
+  color: var(--err);
 }
 
 /* ==========================================================================
@@ -1704,16 +2081,27 @@ button.ghost:hover,
 @media (max-width: 1100px) {
   #app {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(0, 1fr) minmax(200px, 34vh);
+    grid-template-rows: minmax(0, 1fr) minmax(200px, 38vh);
   }
 
   .dock {
     grid-column: 1;
     grid-row: 2;
     height: auto;
-    max-height: 34vh;
+    max-height: 38vh;
     border-inline-start: none;
     border-top: 1px solid var(--line);
+  }
+
+  .view-both .dock-panes-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  .view-both .schema-pane {
+    border-top: none;
+    border-inline-start: 1px solid var(--line);
   }
 
   .workbench-main {
@@ -1728,6 +2116,17 @@ button.ghost:hover,
 
   .code-container {
     max-height: 160px;
+  }
+}
+
+@media (max-width: 640px) {
+  .view-both .dock-panes-area {
+    display: flex;
+    flex-direction: column;
+  }
+  .view-both .schema-pane {
+    border-inline-start: none;
+    border-top: 1px solid var(--line);
   }
 }
 
