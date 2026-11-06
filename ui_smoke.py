@@ -22,7 +22,7 @@ def main() -> None:
 
     errors: list[str] = []
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = p.chromium.launch(channel="msedge")
         page = browser.new_page()
         page.on("pageerror", lambda e: errors.append(str(e)))
         page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)

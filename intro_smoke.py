@@ -20,7 +20,7 @@ def main() -> None:
     threading.Thread(target=server.serve_forever, daemon=True).start()
 
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = p.chromium.launch(channel="msedge")
         page = browser.new_page()
         page.goto(f"http://127.0.0.1:{port}/?NODEMO", wait_until="networkidle")
         page.wait_for_timeout(300)

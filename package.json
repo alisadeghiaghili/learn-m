@@ -1,0 +1,16 @@
+{
+  "name": "learn-m",
+  "version": "0.2.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "description": "Interactive Power Query M visualizer, sandbox, and tutorial.",
+  "type": "module",
+  "scripts": {
+    "test": "node tests.mjs && node test-ui.mjs",
+    "dev": "vite",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.2.1"
+  }
+}
