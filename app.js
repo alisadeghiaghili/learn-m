@@ -77,49 +77,45 @@ export class App {
     this.root.innerHTML = `
       <div class="app-main">
         <header class="toolbar">
-          <div class="brand" data-help-id="brand" role="button" tabindex="0">
-            Learn<span>M</span>
-          </div>
-
+          <div class="brand" data-help-id="brand">Learn<span>M</span></div>
           <div class="level-title" id="level-title" data-help-id="level-title"></div>
-
           <div class="toolbar-actions" data-help-id="toolbar">
             <div class="lang-menu">
               <button type="button" class="lang-btn" data-action="lang-toggle" aria-haspopup="menu" aria-expanded="false" aria-label="${escapeHtml(u.language)}">
-                <span>${currentLang.toUpperCase()}</span>
-                <span class="lang-caret" aria-hidden="true">▾</span>
+                <span data-lang-label>${currentLang.toUpperCase()}</span>
+                <span class="lang-caret" aria-hidden="true"></span>
               </button>
               <div class="lang-dropdown" id="lang-dropdown" role="menu" hidden>
                 ${langItems}
               </div>
             </div>
 
-            <button type="button" class="nav-toggle" data-action="nav-toggle" aria-label="${escapeHtml(u.menuLabel)}" aria-expanded="false">
+            <button type="button" class="nav-toggle" data-action="nav-toggle" aria-label="${escapeHtml(u.menuLabel)}" aria-expanded="false" aria-controls="nav-drawer">
               <span class="nav-bars" aria-hidden="true"></span>
             </button>
 
-            <div class="nav-drawer" id="nav-drawer">
-              <button type="button" class="btn" data-action="levels">${escapeHtml(u.levels)}</button>
-              <button type="button" class="btn" data-action="intro" title="${escapeHtml(u.lessonTitle)}">${escapeHtml(u.lesson)}</button>
-              <button type="button" class="btn" data-action="goal">${escapeHtml(u.guide)}</button>
-              <button type="button" class="btn" data-action="hint">${escapeHtml(u.hint)}</button>
-              <button type="button" class="btn" data-action="solution">${escapeHtml(u.solution)}</button>
-              <button type="button" class="btn" data-action="undo">${escapeHtml(u.undo)}</button>
-              <button type="button" class="btn" data-action="reset">${escapeHtml(u.reset)}</button>
-              <button type="button" class="btn ghost" data-action="sandbox">${escapeHtml(u.sandboxBtn)}</button>
+            <div class="nav-drawer" id="nav-drawer" hidden>
+              <button type="button" data-action="levels">${escapeHtml(u.levels)}</button>
+              <button type="button" data-action="intro" title="${escapeHtml(u.lessonTitle)}">${escapeHtml(u.lesson)}</button>
+              <button type="button" data-action="goal">${escapeHtml(u.guide)}</button>
+              <button type="button" data-action="hint">${escapeHtml(u.hint)}</button>
+              <button type="button" data-action="solution">${escapeHtml(u.solution)}</button>
+              <button type="button" data-action="undo">${escapeHtml(u.undo)}</button>
+              <button type="button" data-action="reset">${escapeHtml(u.reset)}</button>
+              <button type="button" data-action="sandbox" class="ghost">${escapeHtml(u.sandboxBtn)}</button>
               <button type="button" class="help-btn" data-action="help" title="${escapeHtml(u.uiGuideTitle)}" aria-label="${escapeHtml(u.help)}">?</button>
             </div>
 
-            <span class="tb-stat visitors" id="visitor-stat" title="${escapeHtml(u.visitorsTitle)}" hidden>
+            <span class="tb-stat visitors" id="visitor-stat" data-help-id="links" title="${escapeHtml(u.visitorsTitle)}" hidden>
               <svg class="visitor-icon" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0-2.21-2.69-4-6-4s-6 1.79-6 4v1h12v-1zm-1.07 0H3.07C3.56 11.83 5.48 11 8 11s4.44.83 4.93 2z"/></svg>
               <span class="visitor-count" id="visitor-count"></span>
             </span>
 
-            <a class="tb-link gh" href="${REPO_URL}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(u.githubTitle)}" aria-label="GitHub repository">
+            <a class="tb-link gh" data-help-id="links" href="${REPO_URL}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(u.githubTitle)}" aria-label="GitHub repository">
               <svg class="gh-mark" viewBox="0 0 16 16" aria-hidden="true" width="18" height="18"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
             </a>
 
-            <a class="tb-link support" href="${COFFEE_URL}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(u.supportTitle)}">
+            <a class="tb-link support" data-help-id="links" href="${COFFEE_URL}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(u.supportTitle)}">
               ${escapeHtml(u.support)}
             </a>
           </div>
@@ -239,6 +235,19 @@ export class App {
       }
       this.renderAll();
     });
+
+    // Close menus on outside click or Escape
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.lang-menu')) this.closeLang();
+      if (!e.target.closest('.toolbar-actions')) this.closeNav();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.closeLang();
+        this.closeNav();
+      }
+    });
   }
 
   toggleNav() {
@@ -246,6 +255,7 @@ export class App {
     const btn = this.root.querySelector('[data-action="nav-toggle"]');
     if (!drawer || !btn) return;
     const open = drawer.classList.toggle('is-open');
+    drawer.hidden = !open;
     btn.setAttribute('aria-expanded', String(open));
     if (open) this.closeLang();
   }
@@ -255,6 +265,7 @@ export class App {
     const btn = this.root.querySelector('[data-action="nav-toggle"]');
     if (!drawer || !btn) return;
     drawer.classList.remove('is-open');
+    drawer.hidden = true;
     btn.setAttribute('aria-expanded', 'false');
   }
 
@@ -815,14 +826,15 @@ ${level.hint}
       const rows = list
         .map((l) => {
           const p = this.progress[l.id];
-          const diff = Math.min(5, Math.max(1, Math.ceil(l.par * 1.5)));
+          const diff = l.difficulty || Math.min(5, Math.max(1, Math.ceil(l.par * 1.5)));
+          const diffLabel = ui().difficultyOf ? ui().difficultyOf(diff) : `Difficulty: ${diff}`;
           return `
             <button type="button" class="level-row${p?.solved ? ' solved' : ''}" data-level="${escapeHtml(l.id)}">
               <span class="id">${escapeHtml(l.id)}</span>
               <span class="name">${escapeHtml(l.title)}</span>
               <span class="par-note">ideal ${l.par} cmd${l.par === 1 ? '' : 's'}</span>
-              <span class="chip${p?.solved ? ' ok' : ''}">
-                ${p?.solved ? `${escapeHtml(ui().solvedLabel)} ${p.bestCommands ?? ''}` : `<span class="diff-dots">${renderDiffDots(diff)}</span>`}
+              <span class="chip${p?.solved ? ' ok' : ''}" title="${escapeHtml(diffLabel)}">
+                ${p?.solved ? `${escapeHtml(ui().solvedLabel)} ${p.bestCommands ?? ''}` : `<span class="diff-dots" aria-label="${escapeHtml(diffLabel)}">${renderDiffDots(diff)}</span>`}
               </span>
             </button>
           `;
