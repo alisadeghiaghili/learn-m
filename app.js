@@ -56,7 +56,7 @@ export class App {
 
     initLocale();
     this.mount();
-    this.gotoSandbox(false);
+    this.gotoSandbox(true);
     this.initVisitorCounter();
     this.checkInitialModal();
   }
@@ -467,7 +467,14 @@ export class App {
     this.renderAll();
     if (printMessage) {
       this.terminal.pushMeta(ui().appWelcome);
-      this.terminal.pushMeta(ui().sandboxSeeded);
+      const summary = summarizeCurriculum(this.progress);
+      if (summary.solvedCount > 0) {
+        this.terminal.pushOut('');
+        this.terminal.pushOut(ui().curriculumProgress(summary.solvedCount, LEVELS.length, summary.percent));
+      } else {
+        this.terminal.pushMeta(ui().sandboxSeeded);
+        this.terminal.pushMeta(ui().progressSaved);
+      }
     }
     this.terminal.setHint('Table.SelectRows(Sales, each [Region] = "West")');
   }

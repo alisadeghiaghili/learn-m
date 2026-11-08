@@ -41,7 +41,7 @@ export function inspectTableSchema(tableName, tableObj) {
     const colName = typeof col === 'string' ? col : col.name;
     let colType = col && typeof col === 'object' && col.type ? col.type : null;
 
-    if (!colType && Array.isArray(tableObj.rows) && tableObj.rows.length) {
+    if ((!colType || colType === 'any') && Array.isArray(tableObj.rows) && tableObj.rows.length) {
       for (const r of tableObj.rows) {
         if (!r) continue;
         const v = typeof r === 'object' ? r[colName] : undefined;

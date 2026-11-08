@@ -1,6 +1,7 @@
 import { escapeHtml } from './dialog.js';
 import { isTable, typeName, formatValue } from './m-engine.js';
 import { ui } from './i18n/index.js';
+import { getTypeInfo } from './schema.js';
 
 /**
  * Formats table cell values for preview display.
@@ -113,8 +114,20 @@ export function renderPreviewHtml(val, opts = {}) {
   const headHtml = cols
     .map((c) => {
       const colName = typeof c === 'string' ? c : c.name;
-      const colType = c && typeof c === 'object' && c.type ? c.type : 'any';
-      return `<th><span class="th-name">${escapeHtml(colName)}</span><span class="th-type">${escapeHtml(colType)}</span></th>`;
+      let colType = c && typeof c === 'object' && c.type ? c.type : null;
+      if ((!colType || colType === 'any') && rows.length) {
+        for (const r of rows) {
+          if (!r) continue;
+          const v = r[colName];
+          if (v !== null && v !== undefined) {
+            colType = typeName(v);
+            break;
+          }
+        }
+      }
+      const resolved = colType || 'any';
+      const info = getTypeInfo(resolved);
+      return `<th><div class="th-content"><span class="col-badge ${info.typeClass}" aria-hidden="true">${info.badge}</span><span class="th-name">${escapeHtml(colName)}</span></div></th>`;
     })
     .join('');
 
